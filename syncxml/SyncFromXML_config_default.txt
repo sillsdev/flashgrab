@@ -1,0 +1,69 @@
+﻿<?xml version="1.0"?>
+
+<!-- COMMENTS 
+The SyncFromXML addon pulls data into Anki from one or more external XML sources. This configuration file 
+controls that process. The auto-configuration may get you close enough, but for precise results you'll likely want to edit this file by 
+hand eventually. Please see SyncFromXML_help.pdf for details.
+NOTE: Order matters. If multiple lines point to the same anki_field, the last one wins (at least on the test machine). That is why the 
+national-language lines are placed after the English (en) lines: if there's another analysis language besides English, it will be given 
+priority. (And if there isn't, the second line will get set to enabled="false")
+-->
+
+<sources autodelete="false" syncmedia="true" multivalue_separator="  ;  ">
+
+  <!-- Main source of flashcards, for dictionary Entries. If there are Examples, it just includes the first one. -->
+  <source 
+    enabled="true"
+    id_field="Lex GUID" base_xpath="//entry" anki_deck="lift-dictionary" anki_model="DICT_LIFT"
+    source_file="samples/Lindu-Test.lift" 
+    source_audio_folder="samples/audio"
+    source_image_folder="samples/pictures" >
+    <source_field anki_field="Lex GUID" xpath="@guid" grab="first" />
+    <source_field anki_field="Lexeme Form" xpath="lexical-unit/form[@lang={klw}]/text" grab="first"/>
+    <source_field anki_field="Citation Form" xpath="citation/form[@lang={klw}]/text" grab="first"/>
+    <source_field anki_field="Lex Audio" xpath="pronunciation/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
+    <source_field anki_field="Lex Audio" xpath="lexical-unit/form[@lang={klw-Zxxx-x-audio}]/text" grab="first"/>
+    <source_field anki_field="Grammatical Info" xpath="sense/grammatical-info/@value" grab="concat_all" />
+    <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={en}]/text" grab="concat_all" />
+    <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={id}]/text" grab="concat_all" />
+    <source_field anki_field="Glosses" xpath="sense/gloss[@lang={en}]/text" grab="concat_all" />
+    <source_field anki_field="Glosses" xpath="sense/gloss[@lang={id}]/text" grab="concat_all" />
+    <source_field anki_field="Definitions" xpath="sense/definition/form[@lang={en}]/text" grab="concat_all" />
+    <source_field anki_field="Definitions" xpath="sense/definition/form[@lang={id}]/text" grab="concat_all" />
+    <source_field anki_field="Picture" xpath="sense/illustration/@href" grab="first" is_image="true" />
+    <source_field anki_field="Example" xpath="sense/example/form[@lang={klw}]/text" grab="first" />
+    <source_field anki_field="Example Audio" xpath="sense/example/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
+    <source_field anki_field="Example Translation" xpath="sense/example/translation/form[@lang={en}]/text" grab="first" />
+    <source_field anki_field="Example Translation" xpath="sense/example/translation/form[@lang={id}]/text" grab="first" />
+
+  </source>
+
+  <!-- Secondary source of flashcards, for dictionary Examples. Enable this you want each example sentence in a LIFT file to also get its own separate flashcard. Note that this targets the same deck but a different model (DICT_LIFT_EX). -->
+  <source 
+    enabled="true"
+    id_field="Example" base_xpath="//example" anki_deck="lift-dictionary" anki_model="DICT_LIFT_EX" 
+    source_file="samples/Lindu-Test.lift" 
+    source_audio_folder="samples/audio"
+    source_image_folder="samples/pictures" >
+    <source_field anki_field="Example" xpath="form[@lang={klw}]/text" grab="first" />
+    <source_field anki_field="Example Audio" xpath="form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
+    <source_field anki_field="Example Translations" xpath="translation/form[@lang={en}]/text" grab="concat_all" />
+    <source_field anki_field="Example Translations" xpath="translation/form[@lang={id}]/text" grab="concat_all" />
+  </source>
+
+</sources>
+
+  <!-- More...
+  
+  Here are some other LIFT fields of lesser interest. You would need to manually add these fields to the DICT_LIFT model in
+  Anki before pulling data into them. Not all LIFT fields can be pulled in cleanly, but the following have been found to work, though you'll have to add them to your flashcard templates.
+
+    <source_field anki_field="Note" xpath="note/form/text" grab="concat_all" />
+    <source_field anki_field="Custom 1" xpath="field[@type={custom1}]/form[@lang={klw}]/text" grab="first" />
+    <source_field anki_field="Morph Type" xpath="trait[@name={morph-type}]/@value" grab="first" />
+    <source_field anki_field="Date Modified" xpath="@dateModified" grab="first" />
+    <source_field anki_field="ReversalsIndo" xpath="sense/reversal/form[@lang={id}]/text" grab="concat_all" />
+
+  For more possibilities, see the readme file for ideas. 
+  -->
+

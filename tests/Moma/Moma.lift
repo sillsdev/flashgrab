@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="Palaso.DictionaryServices.LiftWriter 1.9.372.0">
+	<entry
+		id="loka_548584b5-7b1c-437b-b546-9af1fad37ecc"
+		dateCreated="2014-03-28T07:10:27Z"
+		dateModified="2014-03-28T07:12:42Z"
+		guid="548584b5-7b1c-437b-b546-9af1fad37ecc">
+		<lexical-unit>
+			<form
+				lang="myl">
+				<text>loka</text>
+			</form>
+			<form
+				lang="myl-Zxxx-x-audio">
+				<text>adat-63531587437330.wav</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="408a2199-fcea-44a6-a7b8-b8d91947d4e9">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>banana</text>
+				</form>
+				<form
+					lang="es">
+					<text>platano</text>
+				</form>
+				<form
+					lang="es-Zxxx-x-audio">
+					<text>loka-63531587541460.wav</text>
+				</form>
+			</definition>
+			<illustration
+				href="pictures\cultural law.png" />
+		</sense>
+	</entry>
+	<entry
+		id="mata_4df2c7de-9019-41de-97b3-41e8caa9b16e"
+		dateCreated="2014-03-28T07:12:42Z"
+		dateModified="2014-03-28T07:13:41Z"
+		guid="4df2c7de-9019-41de-97b3-41e8caa9b16e">
+		<lexical-unit>
+			<form
+				lang="myl">
+				<text>mata</text>
+			</form>
+			<form
+				lang="myl-Zxxx-x-audio">
+				<text>mata-63531587590792.wav</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="979ac262-5b33-4d8b-adc4-7b361fabb771">
+			<grammatical-info
+				value="unknown" />
+			<definition>
+				<form
+					lang="en">
+					<text>eye</text>
+				</form>
+				<form
+					lang="es">
+					<text>ojo</text>
+				</form>
+				<form
+					lang="es-Zxxx-x-audio">
+					<text>mata-63531587597879.wav</text>
+				</form>
+			</definition>
+			<illustration
+				href="pictures\sdd.png" />
+		</sense>
+	</entry>
+</lift>

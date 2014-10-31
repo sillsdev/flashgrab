@@ -1,0 +1,1 @@
+This is a standard Python module (copied straight from v2.7.2), included here because Anki only provides a stripped-down core of Python. (I need the XML parsing.)
