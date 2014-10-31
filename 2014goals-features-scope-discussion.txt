@@ -1,0 +1,143 @@
+Ellen wrote:
+
+Wow, I appreciate Jon’s comments immensely.  It looks like Anki is a strong candidate  IF…….
+1.       we can somehow get them to build in one of the most VALUABLE FEATURES we need—multiple choice.  Or we do it ourselves.
+2.       If we can somehow help them make the program user friendly.
+
+Yes, yes…..I would love it if one of you technical guys could give Anki a good test drive.   I signed in to Anki some months ago and tried playing with some stacks build by different users in a couple of languages….and was quite underwhelmed.   Partially because the flashcards I looked at tended to have text on one side and gloss on the other---no pictures or audio.   There is inherently little challenge in flipping flashcards.   
+
+What the mind needs for vocabulary retention are context, and good sensory and mental stimulation.  Pictures, phrases, words optionally seen with a sample sentence, audio, and multiple choice quizzing are crucial to keeping the user coming back.
+Ellen
+
+From: Jon C
+
+Date: October 30, 2014 9:14:30 PM CDT
+Subject: vocab software proposal
+
+...
+Note that the number of features Anki already provides is astounding (to me, at least). And Ankiweb already freely hosts both addons and shared decks.
+
+I would highly recommend that someone technical give Anki a good test drive, creating records with customized card-faces (Anki cards are n-sided), a.k.a card types. Once they're comfortable there and understand Anki, they could try it out using the sync addon and a LIFT file. With a bit more testing with a variety of users and computers, a Python programmer could iron out any remaining setup issues. (The one-way sync engine itself seems pretty trouble-free.)
+
+Ellen wrote... (I'm replying as "JON:")
+
+Key Features from VM that are not in Anki:
+
+Multiple choice/matching testing involving several entries.
+
+JON: NOT YET. I agree that creating something grid-based would very useful (e.g. an addon for Anki that shows a subset of the next N cards)
+You might considering contracting the Anki developer to do this for money, so it would be done right, done efficiently, and built right into the standard installer. With an addon, he might or might not incorporate it, eventually.
+
+
+Audio practice feature, in order or random.
+
+
+JON: Yes. Anki's order is essentially random. Anki cards can be many-sided, and one of the sides could easily be made to have only audio on the front side of the card.
+
+I'm not positive what "audio practice" means--was that it? It's probably not practical for the computer to check the user's pronunciation...
+
+ 
+
+Separate practice for comprehension, reading and writing.
+
+
+JON: Yes, I think that the many-sided aspect of Anki cards works well for this. I've only done comprehension and reading testing myself, but here's how you create or tweak to a writing-testing card type (I've now added a link to this excellent video to the addon's page, as a tip):
+https://www.youtube.com/watch?v=5tYObQ3ocrw
+
+Other Key Features:
+
+Users control choice of words/phrases to build their own database.
+
+
+JON: Yes. With the addon, I think the best option is to mark the entries in FLEx and filter out everything else based on that mark. There are two ways to do the filtering:
+a) manually filter on that prior to every export-and-sync
+b) do it once, in Anki, filter and disable unwanted records
+I'd recommend (b); those cards' blocked status will be remembered, and new FLEx records will get cards automatically)
+
+Users add audio and pictures links to entries.
+
+
+Not dependent on an expert speaker to create the database.  Learn and revise as you go.
+
+
+JON: Yes, though the addon works with WeSay as easily as FLEx (even more so--pulling from WeSay is a quick single menu-click).
+
+Allows multiple gloss options (phonetics, orthographic, English or other language translations).
+
+JON: Yes. The addon supports any LIFT field that's easily accessible, though it only comes with settings for typical ones.
+
+Supports non-Roman scripts
+
+JON: Yes. The Anki developer is primarily focused on Japanese. I've not tested right-to-left yet.
+
+Entries can be words, phrases, or whole sentences.
+
+JON: Yes, and with the addon the user has the option to have cards auto-created as...
+
+- one card per entry; period (can still include first-example or concatenated-examples)
+
+- or, one card per entry, plus one card per example sentence. (It does this by doing a second pass as though it were a second source file, to a second card type. The setup wizard can set this up, for one LIFT file.)
+
+Vocab sets are sharable.   (e.g. Trainers can also build sets of words they can share with learners.)
+
+JON: Yes, in either of two ways:
+a) Using Anki's built-in Shared Deck feature and hosting. One user prepares the deck and then shares it with the world, here:
+https://ankiweb.net/shared/decks/
+b) Two users are set up with FLEx/WeSay-with-send-receive, and Anki-with-plugin. Allows for collaborative editing (in FLEx/WeSay).
+
+ 
+
+The program can support multiple language sets (different languages, different levels of same language)
+
+JON: Yes, Anki definitely can. The addon can pull from multiple sources with one sync click (with b above, the same file is mapped as a second source to pull examples one by one),
+  BUT my setup wizard can only do the setup for one source file (you could do it twice and manually merge the config files).
+
+Usable offline, not dependent on a high-speed internet connection.
+
+JON: Yes. If you can contrive to find a  platform Anki doesn't support, Ankiweb does provide what is essentially the mobile UI as a web-dependent HTML site.
+
+I can't remember whether you can sync mobile devices directly with Anki desktop without a web connection. It's likely you can.
+
+User friendly; short learning curve.
+JON: SORT OF. Both Anki and especially the initial setup of the addon (esp. for atypical settings) could improve in this regard. Anki is mature and widely loved.
+
+Other desirable features not immediately needed for Version 1:
+
+Data can be ported from other software like FLEX
+
+JON: Yes, done, though you have to export the data to LIFT before each sync (you can skip the media files if they haven't changed).
+Syncing from WeSay is literally one click once it's set up.
+
+Timed repeat and more reviews for wrong answers
+
+JON: Yes, Anki has SRS.
+
+Merging databases created by different users.
+
+JON: PRETTY MUCH.
+a) Merging FLEx files as a 'sync' is difficult; it's quite doable as a manual 'append' process (create A2 as a copy of project A, export B to LIFT and import that into A2).
+
+b) Merging decks that are already in Anki is easier, if the only merged end product you want is an Anki Shared Deck.
+
+Online/cloud storage of databases.
+
+JON: Yes. Anki provides free hosting of shared decks, here:
+
+https://ankiweb.net/shared/decks/
+
+Runs on Apple and Linux
+JON: Yes, Anki runs on
+  Windows, Mac, Linux, and BSD (all are free and open source)
+
+Future software products not included in this write-up:   
+A version of the software to run on tablets or phones.
+JON: Yes, Anki has a mobile version for
+  iOS (not free--but with a web connection, you can use the free web interface: http://ankisrs.net/#) and
+  Android (free, works offline)
+My addon will almost certainly only work on
+  Windows and Linux, and I've only tested it once or twice on Linux.
+NOTE: With the addon, nothing will stop you from editing in desktop/mobile Anki, and those edits should sync across your devices via the Anki ecosystem, but the next one-way sync will blow them away. Edits should be done in FLEx/WeSay, and then synced to mobile.
+
+I hope this helps... it would be great to get enough of the right people motivated to make that last push forward to get a more polished solution (i.e. improved setup wizard, and a grid addon).
+
+Jon

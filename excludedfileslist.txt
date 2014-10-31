@@ -1,0 +1,6 @@
+.pyc\
+\local_launch.py\
+\syncx_local.py\
+\SyncFromXML_config.txt\
+\SyncFromXML_log.txt\
+\SyncFromXML_configB

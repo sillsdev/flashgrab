@@ -1,0 +1,167 @@
+
+I took a course in Second Language Acquisition as part of a degree in linguistics, and the primary strategy we were taught for learning new vocabulary was TPR (Total Physical Response). This generally involves pointing at something or making some physical movement as a correct response to what a native speaker says as part of a practice drill. Example: while looking at a grid of four (or more) photos, the trainer describes something about one of them, and the listener points to the correct photo.
+
+That is the approach that Rosetta Stone takes, and it is very effective. However, I think it could be much more effective in an SRS context such as Anki, where you don't have to repeat an entire lesson just to work on the one or two hard-to-memorize words in that lesson.
+
+In Anki, I think the trick would be to keep selecting four (or more) cards that all would 'work' in a given drill. In the example above, four cards that contained both audio and an image would do nicely; just one of the four audio clips would be played, and the user would click on the corresponding image. Here's a plain-text example: an English word is prominently displayed center-screen, and the user clicks on one of four tiles containing a foreign-language word, hopefully the one with that English meaning.
+
+
+C:\Documents and Settings\user57\Application Data\.anki\plugins
+D:\files\workspace\AnkiFromXML
+C:\Program Files\Anki\xml
+anki-2.0.9
+
+-----
+
+Okay, I found this page again (which had previously seemed unnecessary for plugin development):
+http://ankisrs.net/docs/WindowsDevEnvironment.html
+
+I guess I need to bite the bullet and go through all of those steps. But do I really need to use Python 2.6.x? I've already got 2.7.2 installed (as well as  3.2).
+
+Jon
+
+donate:
+ Win Media Player plugin?
+
+
+creating Qt interfaces for Python apps:
+http://query7.com/learning-python-qt-programming-with-pyqt-pyside
+examples
+http://www.cs.usfca.edu/~afedosov/qttut/  (good basic tutorial)
+http://diotavelli.net/PyQtWiki/Creating_GUI_Applications_with_PyQt_and_Qt_Designer
+
+Reply to this thread?
+"it would be a lot easier if there was more documentation"
+http://groups.google.com/group/ankisrs/browse_thread/thread/9a4226454d629cb6?pli=1
+
+
+
+Where hooks are and aren't in Anki:
+http://groups.google.com/group/ankisrs/browse_thread/thread/41627e4fc4ab965a/953279aa7cefc3b6?lnk=gst&q=plugin&pli=1
+
+My thread:
+http://groups.google.com/group/ankisrs/browse_thread/thread/7cda32eff95a78ca/6caae97f05cc2767?lnk=gst&q=jon+c#
+
+Two posts where I mentioned my plans:
+http://groups.google.com/group/flex-list/browse_thread/thread/aaabc329bd542bc1#
+http://groups.google.com/group/flex-list/browse_thread/thread/97b9d6ef80a728e2/217716f873cf5a8c?lnk=gst&q=keyes#
+
+The LIFT list:
+http://groups.google.com/group/LexiconInterchangeFormat
+LIFTDotNet (some C# code for parsing LIFT):
+http://lift-standard.googlecode.com/svn/trunk/LIFTDotNet/
+
+Spanish deck note: "ALSO, because these cards were added at the end, the deck is now out of order. 
+This isn't a major problem (just means you'll get all the errored cards at the end), 
+but if you want to avoid this (recommended), make inactive tags 2000-10000 when you're 
+on the first 1000, 3000-10000 when on the second 2000, etc."
+
+Other decks of interest:
+IPA
+Arabic alphabet
+U.S. state capitls w screenshots
+hi freq Hebrew vocab
+Greek
+US trees
+The Indonesian way
+
+Cards to add to lifedeck:
+Lindu team members
+Kulawi team members
+Kulawi kepala desa
+supporters
+Bethany/Calvary/WBC friends
+KD translator in Toraja
+
+plugins:
+- hello world
+- *For developers only: batch processing plugin example
+- search fields
+- tolerant spell-check
+- improved card search
+- display all the answers to a question (i.e. for all senses? homographs?)
+- bulk cloze
+- find homonyms/synonyms
+- read: Anki reset
+- mark on delete
+
+
+MODEL:
+lexeme form  (prevent empty)
+  hom num?
+  variants?
+lexeme form audio
+meanings (concat of glosses and s.t. defs)
+  defs?
+example text
+  more examples?
+example audio
+image
+
+Use lxml because it supports XPath and auto-validation from an RNG file
+to strip formatting, mixed-WS stuff, etc. use this XPath:
+descendant-or-self::text()
+that will return a list aa, for which you can "".join(aa)
+http://infohost.nmt.edu/tcc/help/pubs/pylxml/web/xpath.html
+
+a-
+
+probably want to parse iteratively; here are some tips: 
+http://www.ibm.com/developerworks/xml/library/x-hiperfparse/
+
+XPath notes...
+drink//price
+  From the descendants of "drink", select all "price" elements.
+inventory/drink/pop@supplier
+  Selects the supplier attribute of pop
+amount/..
+  This expression uses a relative path location and selects all of the amount elements in our XML document. It then uses the parent sequence ".." to select the parent element of each amount element. In our XML document, there are three amount elements, and their parents are lemonade, pop and chips
+inventory/snack/chips/*
+  selects all children of chips
+inventory/*/*/*
+  selects all great-grandchildren of inventory (I think)
+more: http://www.tizag.com/xmlTutorial/xpathbar.php
+
+---------------------------------------
+PLUGIN DEVELOPMENT
+
+READ THIS:
+http://ankisrs.net/docs/dev/addons.html
+
+
+---------------------------------------
+PLUGIN DEVELOPMENT - JON'S NOTES
+
+- Using File, Download, Shared Plugin, download a sample plugin.
+- Choose Settings, Plugins, Open Plugin Folder, and then open the plugin's code in a text editor.
+- Review it to see how it works and if it looks safe, then restart Anki and try out the new functionality.
+- Anki runs (imports? loads?) the plugin code once when you start Anki, so if you need to edit the plugin code, you'll need to save it and restart Anki in order for your changes to take effect.
+- To create your own plugin, just write some code and save it into that same folder. Or, copy the sample plugin's file and adapt it to your needs.
+
+SAMPLE PLUGINS
+
+"Hello World" is a very simple plugin that does one thing: During a review, it interposes a custom event handler that will pop up a "Hello world!" message box if the user pressed the "r" key. After checking for this "r" keystroke, it passes control back to the default event handler.
+
+"For developers only: batch processing plugin example" functions in a different context--it runs a process (which you need to write yourself) on every currently-selected fact in the Browser window. The filename ends in ".py.OFF" by default, so you'll need to delete the ".OFF" part before launching Anki, or else Anki can't load the plugin. And the plugin won't actually do anything to your selected facts until you write code where the commented-out section is. Proceed carefully! If you insert the following snippet of code there, it will append a period to the Front field in every selected fact.
+        for fact in facts: fact["Front"] += "."
+
+API AND SOURCE CODE
+
+The plugins that are out there give practical examples of how to use the Anki API, but that API is not yet documented, so to really understand it, you may want to download the Anki source code, and look at the following modules, perhaps in the following order:
+- 
+- ???
+
+Hint-peeking
+Image Download
+Learn Mode
+?Interval Tweak
+
+consider also installing:
+Resize Images
+Speak Slower
+Custom Media Player 2 (needed for non-ASCII filenames?)
+?Reset Creation Times
+
+v2:
+consider something like Real-Time Import for auto-update from FLEx/WeSay.
+
