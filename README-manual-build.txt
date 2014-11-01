@@ -1,5 +1,8 @@
-To 'build' this addon, make a zip file containing this folder and file:
+To 'build' this addon, make a zip file containing these folders and this file:
 syncxml/
+distutils/
+xml/
+xpath/
 syncx.py
 
 Then, upload the zip file to this addon's page: 
@@ -11,8 +14,8 @@ Optionally, first make sure that the files here are up to date:
 That is, if you've edited the FLEx project, do this:
 - Re-export that (with media) to LIFT
 - If necessary, delete the Anki project, and record types DICT_LIFT/DICT_LIFT_EX, and reload this fresh:
-syncxml/samples/lift-dictionary.apkg
+  syncxml/samples/lift-dictionary.apkg
 - Sync the LIFT/media into that fresh Anki deck, then re-create an updated .apkg file.
-  At this point you should probably also re-share the .apkg file on its own, here:
+  At this point you could also re-share the .apkg file on its own, here:
   https://ankiweb.net/shared/decks/
 
