@@ -4,9 +4,8 @@
 The SyncFromXML addon pulls data into Anki from one or more external XML sources. This configuration file 
 controls that process. The auto-configuration may get you close enough, but for precise results you'll likely want to edit this file by 
 hand eventually. Please see SyncFromXML_help.pdf for details.
-NOTE: Order matters. If multiple lines point to the same anki_field, the last one wins (at least on the test machine). That is why the 
-national-language lines are placed after the English (en) lines: if there's another analysis language besides English, it will be given 
-priority. (And if there isn't, the second line will get set to enabled="false")
+NOTE: Order matters. If multiple lines point to the same anki_field, the last one wins (at least on the test machine). That is why the 'id' lines
+are placed after the 'en' lines: if there's another analysis language besides English, it is given priority. (And if not, you'll get a harmless duplicate.)
 -->
 
 <sources autodelete="false" syncmedia="true" multivalue_separator="  ;  ">
@@ -22,7 +21,7 @@ priority. (And if there isn't, the second line will get set to enabled="false")
     <source_field anki_field="Lexeme Form" xpath="lexical-unit/form[@lang={klw}]/text" grab="first"/>
     <source_field anki_field="Citation Form" xpath="citation/form[@lang={klw}]/text" grab="first"/>
     <source_field anki_field="Lex Audio" xpath="pronunciation/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
-    <source_field anki_field="Lex Audio" xpath="lexical-unit/form[@lang={klw-Zxxx-x-audio}]/text" grab="first"/>
+    <source_field anki_field="Lex Audio" xpath="lexical-unit/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
     <source_field anki_field="Grammatical Info" xpath="sense/grammatical-info/@value" grab="concat_all" />
     <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={en}]/text" grab="concat_all" />
     <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={id}]/text" grab="concat_all" />
