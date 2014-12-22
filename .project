@@ -3,6 +3,7 @@
 	<name>AnkiFromXml</name>
 	<comment></comment>
 	<projects>
+		<project>anki</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

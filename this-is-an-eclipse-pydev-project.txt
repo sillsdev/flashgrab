@@ -1,0 +1,1 @@
+I.e. an Eclipse project (.project) that is specifically a Pydev project (.pydevproject).
