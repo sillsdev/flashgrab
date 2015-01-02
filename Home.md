@@ -8,3 +8,5 @@ https://ankiweb.net/shared/info/915685712
 That page also provides tips and video links.
 
 Created by Jonathan Coombs. Copyright 2014 SIL, freely available under the MIT license.
+
+..
