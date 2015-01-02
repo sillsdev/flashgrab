@@ -194,7 +194,7 @@ def wizard(target=""):
     flex_dir = F.flex_dir()
     flex_msg = ''
     if flex_dir:
-        flex_msg = "  For quickest results, give it the same name as one of the projects here:\n  {}\n".format(flex_dir)
+        flex_msg = "  For quickest setup, give it the same name as one of the projects here:\n  {}\n".format(flex_dir)
 
      
     msg = "Would you like to bring in your own* LIFT data? If so, either...\n" \

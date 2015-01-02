@@ -48,6 +48,7 @@ are placed after the 'en' lines: if there's another analysis language besides En
     <source_field anki_field="Example Audio" xpath="form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
     <source_field anki_field="Example Translations" xpath="translation/form[@lang={en}]/text" grab="concat_all" />
     <source_field anki_field="Example Translations" xpath="translation/form[@lang={id}]/text" grab="concat_all" />
+    <source_field anki_field="Picture" xpath="../illustration/@href" grab="first" is_image="true" />
   </source>
 
 </sources>

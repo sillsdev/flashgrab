@@ -30,9 +30,9 @@ import os # , re, copy
 from pprint import pformat as pformat
 
 
-VERSION = 'v0.8.5'
-ADDON_SHORT_NAME = 'SyncFromXML'
-ADDON_NAME = 'SyncFromXML one-way into Anki'
+VERSION = 'v0.8.7'
+ADDON_SHORT_NAME = 'FlashGrab'
+ADDON_NAME = 'FlashGrab: one-way sync from XML'
 ADDON_NAME2 = ADDON_NAME + ' ' + VERSION
 
 
