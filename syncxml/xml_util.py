@@ -21,8 +21,8 @@ import distutils.file_util #from Python 2.7.2
 
 DEFAULT_NAT_LANG = 'en'
 EXAMPLE = "Example"
-MODEL1 = "DICT_LIFT"
-MODEL2 = "DICT_LIFT_EX"
+MODEL1 = "LIFT_Word"
+MODEL2 = "LIFT_Sentence"
 
 # The vernacular and national WSes in the sample/default config file: 
 VERN = 'klw'

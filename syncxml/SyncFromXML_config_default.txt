@@ -13,7 +13,7 @@ are placed after the 'en' lines: if there's another analysis language besides En
   <!-- Main source of flashcards, for dictionary Entries. If there are Examples, it just includes the first one. -->
   <source 
     enabled="true"
-    id_field="Lex GUID" base_xpath="//entry" anki_deck="lift-dictionary" anki_model="DICT_LIFT"
+    id_field="Lex GUID" base_xpath="//entry" anki_deck="lift-dictionary" anki_model="LIFT_Word"
     source_file="samples/Lindu-Test.lift" 
     source_audio_folder="samples/audio"
     source_image_folder="samples/pictures" >
@@ -22,8 +22,7 @@ are placed after the 'en' lines: if there's another analysis language besides En
     <source_field anki_field="Citation Form" xpath="citation/form[@lang={klw}]/text" grab="first"/>
     <source_field anki_field="Lex Audio" xpath="pronunciation/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
     <source_field anki_field="Lex Audio" xpath="lexical-unit/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
-    <source_field anki_field="Note" xpath="sense/gloss[@lang={en}]/text" grab="concat_all" />
-    <source_field anki_field="Note" xpath="sense/gloss[@lang={id}]/text" grab="concat_all" />
+    <source_field anki_field="Note" xpath="note/form/text" grab="concat_all" />
 	<!-- To do: supporting a Tags virtual field here would be helpful. We currently can't sync directly to Anki tags, as they aren't exactly a field. -->
     <source_field anki_field="Grammatical Info" xpath="sense/grammatical-info/@value" grab="concat_all" />
     <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={en}]/text" grab="concat_all" />
@@ -43,7 +42,7 @@ are placed after the 'en' lines: if there's another analysis language besides En
   <!-- Secondary source of flashcards, for dictionary Examples. Enable this you want each example sentence in a LIFT file to also get its own separate flashcard. Note that this targets the same deck but a different model (DICT_LIFT_EX). -->
   <source 
     enabled="true"
-    id_field="Example" base_xpath="//example" anki_deck="lift-dictionary" anki_model="DICT_LIFT_EX" 
+    id_field="Example" base_xpath="//example" anki_deck="lift-dictionary" anki_model="LIFT_Sentence"
     source_file="samples/Lindu-Test.lift" 
     source_audio_folder="samples/audio"
     source_image_folder="samples/pictures" >
@@ -58,7 +57,7 @@ are placed after the 'en' lines: if there's another analysis language besides En
 
   <!-- More...
   
-  Here are some other LIFT fields of lesser interest. You would need to manually add these fields to the DICT_LIFT model in
+  Here are some other LIFT fields of lesser interest. You would need to manually add these fields to the LIFT_Word model in
   Anki before pulling data into them. Not all LIFT fields can be pulled in cleanly, but the following have been found to work, though you'll have to add them to your flashcard templates.
 
     <source_field anki_field="Note" xpath="note/form/text" grab="concat_all" />
