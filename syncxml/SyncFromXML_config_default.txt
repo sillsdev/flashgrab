@@ -22,6 +22,9 @@ are placed after the 'en' lines: if there's another analysis language besides En
     <source_field anki_field="Citation Form" xpath="citation/form[@lang={klw}]/text" grab="first"/>
     <source_field anki_field="Lex Audio" xpath="pronunciation/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
     <source_field anki_field="Lex Audio" xpath="lexical-unit/form[@lang={klw-Zxxx-x-audio}]/text" grab="first" is_audio="true" />
+    <source_field anki_field="Note" xpath="sense/gloss[@lang={en}]/text" grab="concat_all" />
+    <source_field anki_field="Note" xpath="sense/gloss[@lang={id}]/text" grab="concat_all" />
+	<!-- To do: supporting a Tags virtual field here would be helpful. We currently can't sync directly to Anki tags, as they aren't exactly a field. -->
     <source_field anki_field="Grammatical Info" xpath="sense/grammatical-info/@value" grab="concat_all" />
     <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={en}]/text" grab="concat_all" />
     <source_field anki_field="Reversals" xpath="sense/reversal/form[@lang={id}]/text" grab="concat_all" />
