@@ -30,7 +30,7 @@ import os # , re, copy
 from pprint import pformat as pformat
 
 
-VERSION = 'v0.8.7'
+VERSION = 'v0.8.8'
 ADDON_SHORT_NAME = 'FlashGrab'
 ADDON_NAME = 'FlashGrab: one-way sync from XML'
 ADDON_NAME2 = ADDON_NAME + ' ' + VERSION
