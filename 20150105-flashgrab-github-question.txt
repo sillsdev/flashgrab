@@ -1,0 +1,17 @@
+My wiki's connection to my repository appears to be broken.
+
+I still have these files in the repo but they no longer update the wiki:
+  Home.md 
+  How-to-limit-to-a-subset-of-the-lexicon.md
+  README.md
+
+Likewise, when I added a new wiki page (How-to-run-and-debug-Anki-in-a-Linux-virtual-machine-or-in-Windows) it didn't show up in the repo.
+
+I'm not sure if this was a recent GitHub change, or whether it's because the project was recently forked to:
+  https://github.com/sillsdev/flashgrab
+
+(I've deleted the original repo: https://github.com/pconstrictor/lexml2anki)
+
+I see that I can clone the wiki as a separate repository--is that a new requirement? If so, I guess I should just delete those three files from the main repo?
+
+-Jon
