@@ -430,6 +430,7 @@ def launch_file(filepath):
         subprocess.call(('xdg-open', filepath))  
 
 if A.IN_ANKI:
+    mw.form.menuTools.addSeparator()
     # create a new menu item in Anki
     action = QAction(SX.ADDON_NAME, mw)
     # set it to call our function when it's clicked
@@ -437,7 +438,7 @@ if A.IN_ANKI:
     # and add it to the tools menu
     mw.form.menuTools.addAction(action)
     
-    action = QAction('(Re)configure ' + SX.ADDON_SHORT_NAME, mw)
+    action = QAction('(re)configure ' + SX.ADDON_SHORT_NAME, mw)
     mw.connect(action, SIGNAL("triggered()"), on_reconfigure_clicked)
     mw.form.menuTools.addAction(action)
 
