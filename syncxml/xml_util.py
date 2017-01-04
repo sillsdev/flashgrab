@@ -17,7 +17,7 @@ import unicodedata
 from . import anki_util as A
 from . import logg as L
 from pprint import pformat as pformat
-import distutils.file_util #from Python 2.7.2
+from . import file_util
 
 DEFAULT_NAT_LANG = 'en'
 EXAMPLE = "Example"
@@ -580,7 +580,7 @@ class XmlDataLoader:
                             elif src_time < target_time:
                                 L.error('The target media file already exists and is newer: ({}). Will not attempt to copy the file.'.format(target_path))
                             elif not dry_run:
-                                distutils.file_util.copy_file(abs_source_path, abs_target_path, update=0, dry_run=0)
+                                file_util.copy_file(abs_source_path, abs_target_path, update=0, dry_run=0)
                                 num_files_copied += 1
                                 L.debug("FILE COPIED from {} to {}".format(abs_source_path, abs_target_path))
 

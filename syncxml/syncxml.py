@@ -30,7 +30,7 @@ import os # , re, copy
 from pprint import pformat as pformat
 
 
-VERSION = 'v0.8.8'
+VERSION = 'v0.8.7'
 ADDON_SHORT_NAME = 'FlashGrab'
 ADDON_NAME = 'FlashGrab: one-way sync from XML'
 ADDON_NAME2 = ADDON_NAME + ' ' + VERSION
@@ -108,7 +108,7 @@ def get_docs_dir_name():
 def get_first_lift_file(loc):
     """Returns a full path, or an empty string."""
     if not os.path.exists(loc): return ''
-    import glob  #won't need to be done often
+    from . import glob  #won't need to be done often
     mask = '*.lift'
     L.debug('Searching for {} in {} or its immediate subfolders'.format(mask, loc))
     pat = os.path.join(loc, mask)
