@@ -8,7 +8,7 @@ http://ankisrs.net/docs/addons.html#debugging
 '''
 
 # Force Python 3 syntax
-from __future__ import print_function, absolute_import, division  , unicode_literals
+
 import os
 import shutil
 

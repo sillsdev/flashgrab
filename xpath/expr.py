@@ -1,4 +1,4 @@
-from __future__ import division
+
 from itertools import *
 import math
 import operator
@@ -18,7 +18,7 @@ def string_value(node):
     """Compute the string-value of a node."""
     if (node.nodeType == node.DOCUMENT_NODE or
         node.nodeType == node.ELEMENT_NODE):
-        s = u''
+        s = ''
         for n in axes['descendant'](node):
             if n.nodeType == n.TEXT_NODE:
                 s += n.data
@@ -82,7 +82,7 @@ def document_order(node):
 def nodeset(v):
     """Convert a value to a nodeset."""
     if not nodesetp(v):
-        raise XPathTypeError, "value is not a node-set"
+        raise XPathTypeError("value is not a node-set")
     return v
 
 def nodesetp(v):
@@ -94,25 +94,25 @@ def string(v):
     """Convert a value to a string."""
     if nodesetp(v):
         if not v:
-            return u''
+            return ''
         return string_value(v[0])
     elif numberp(v):
         if v == float('inf'):
-            return u'Infinity'
+            return 'Infinity'
         elif v == float('-inf'):
-            return u'-Infinity'
+            return '-Infinity'
         elif int(v) == v and v <= 0xffffffff:
             v = int(v)
         elif str(v) == 'nan':
-            return u'NaN'
-        return unicode(v)
+            return 'NaN'
+        return str(v)
     elif booleanp(v):
-        return u'true' if v else u'false'
+        return 'true' if v else 'false'
     return v
 
 def stringp(v):
     """Return true iff 'v' is a string."""
-    return isinstance(v, basestring)
+    return isinstance(v, str)
 
 def boolean(v):
     """Convert a value to a boolean."""
@@ -325,13 +325,13 @@ class Function(Expr):
         self.args = args
         self.evaluate = getattr(self, 'f_%s' % name.replace('-', '_'), None)
         if self.evaluate is None:
-            raise XPathUnknownFunctionError, 'unknown function "%s()"' % name
+            raise XPathUnknownFunctionError('unknown function "%s()"' % name)
 
         if len(self.args) < self.evaluate.minargs:
-            raise XPathTypeError, 'too few arguments for "%s()"' % name
+            raise XPathTypeError('too few arguments for "%s()"' % name)
         if (self.evaluate.maxargs is not None and
             len(self.args) > self.evaluate.maxargs):
-            raise XPathTypeError, 'too many arguments for "%s()"' % name
+            raise XPathTypeError('too many arguments for "%s()"' % name)
 
     #
     # XPath functions are implemented by methods of the Function class.
@@ -397,7 +397,7 @@ class Function(Expr):
             ids = [string(arg)]
         if node.nodeType != node.DOCUMENT_NODE:
             node = node.ownerDocument
-        return list(filter(None, (node.getElementById(id) for id in ids)))
+        return list([_f for _f in (node.getElementById(id) for id in ids) if _f])
 
     @function(0, 1, implicit=True, first=True)
     def f_local_name(self, node, pos, size, context, argnode):
@@ -494,12 +494,12 @@ class Function(Expr):
     def f_normalize_space(self, node, pos, size, context, s):
         return re.sub(r'\s+', ' ', s.strip())
 
-    @function(3, 3, convert=lambda x: unicode(string(x)))
+    @function(3, 3, convert=lambda x: str(string(x)))
     def f_translate(self, node, pos, size, context, s, source, target):
         # str.translate() and unicode.translate() are completely different.
         # The translate() arguments are coerced to unicode.
         table = {}
-        for schar, tchar in izip(source, target):
+        for schar, tchar in zip(source, target):
             schar = ord(schar)
             if schar not in table:
                 table[schar] = tchar
@@ -534,7 +534,7 @@ class Function(Expr):
         for n in axes['ancestor-or-self'](node):
             if n.nodeType == n.ELEMENT_NODE and n.hasAttribute('xml:lang'):
                 lang = n.getAttribute('xml:lang').lower()
-                if s == lang or lang.startswith(s + u'-'):
+                if s == lang or lang.startswith(s + '-'):
                     return True
                 break
         return False
@@ -646,7 +646,7 @@ def make_axes():
     def attribute(node):
         if node.attributes is not None:
             return (node.attributes.item(i)
-                    for i in xrange(node.attributes.length))
+                    for i in range(node.attributes.length))
         return ()
 
     @axisfn()
@@ -669,7 +669,7 @@ def make_axes():
         return chain([node], ancestor(node))
 
     # Place each axis function defined here into the 'axes' dict.
-    for axis in locals().values():
+    for axis in list(locals().values()):
         axes[axis.__name__] = axis
 
 make_axes()
@@ -734,7 +734,7 @@ class PathExpr(Expr):
         # resulting from the previous step.
         for step in self.steps[1:]:
             aggregate = []
-            for i in xrange(len(result)):
+            for i in range(len(result)):
                 nodes = step.evaluate(result[i], i+1, len(result), context)
                 if not nodesetp(nodes):
                     raise XPathTypeError("path step is not a node-set")
@@ -768,7 +768,7 @@ class PredicateList(Expr):
 
         for pred in self.predicates:
             match = []
-            for i, node in izip(count(1), result):
+            for i, node in zip(count(1), result):
                 r = pred.evaluate(node, i, len(result), context)
 
                 # If a predicate evaluates to a number, select the node

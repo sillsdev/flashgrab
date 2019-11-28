@@ -247,7 +247,7 @@ class Element(object):
     def __len__(self):
         return len(self._children)
 
-    def __nonzero__(self):
+    def __bool__(self):
         warnings.warn(
             "The behavior of this method will change in future versions.  "
             "Use specific 'len(elem)' or 'elem is not None' test instead.",
@@ -443,7 +443,7 @@ class Element(object):
     # @defreturn list of strings
 
     def keys(self):
-        return self.attrib.keys()
+        return list(self.attrib.keys())
 
     ##
     # Gets element attributes, as a sequence.  The attributes are
@@ -453,7 +453,7 @@ class Element(object):
     # @defreturn list of (string, string) tuples
 
     def items(self):
-        return self.attrib.items()
+        return list(self.attrib.items())
 
     ##
     # Creates a tree iterator.  The iterator loops over this element
@@ -497,7 +497,7 @@ class Element(object):
 
     def itertext(self):
         tag = self.tag
-        if not isinstance(tag, basestring) and tag is not None:
+        if not isinstance(tag, str) and tag is not None:
             return
         if self.text:
             yield self.text
@@ -874,12 +874,12 @@ def _namespaces(elem, encoding, default_namespace=None):
         if isinstance(tag, QName):
             if tag.text not in qnames:
                 add_qname(tag.text)
-        elif isinstance(tag, basestring):
+        elif isinstance(tag, str):
             if tag not in qnames:
                 add_qname(tag)
         elif tag is not None and tag is not Comment and tag is not PI:
             _raise_serialization_error(tag)
-        for key, value in elem.items():
+        for key, value in list(elem.items()):
             if isinstance(key, QName):
                 key = key.text
             if key not in qnames:
@@ -907,10 +907,10 @@ def _serialize_xml(write, elem, encoding, qnames, namespaces):
                 _serialize_xml(write, e, encoding, qnames, None)
         else:
             write("<" + tag)
-            items = elem.items()
+            items = list(elem.items())
             if items or namespaces:
                 if namespaces:
-                    for v, k in sorted(namespaces.items(),
+                    for v, k in sorted(list(namespaces.items()),
                                        key=lambda x: x[1]):  # sort on prefix
                         if k:
                             k = ":" + k
@@ -962,10 +962,10 @@ def _serialize_html(write, elem, encoding, qnames, namespaces):
                 _serialize_html(write, e, encoding, qnames, None)
         else:
             write("<" + tag)
-            items = elem.items()
+            items = list(elem.items())
             if items or namespaces:
                 if namespaces:
-                    for v, k in sorted(namespaces.items(),
+                    for v, k in sorted(list(namespaces.items()),
                                        key=lambda x: x[1]):  # sort on prefix
                         if k:
                             k = ":" + k
@@ -1024,7 +1024,7 @@ _serialize = {
 def register_namespace(prefix, uri):
     if re.match("ns\d+$", prefix):
         raise ValueError("Prefix format reserved for internal use")
-    for k, v in _namespace_map.items():
+    for k, v in list(_namespace_map.items()):
         if k == uri or v == prefix:
             del _namespace_map[k]
     _namespace_map[uri] = prefix
@@ -1242,7 +1242,7 @@ class _IterParseIterator(object):
             else:
                 raise ValueError("unknown event %r" % event)
 
-    def next(self):
+    def __next__(self):
         while 1:
             try:
                 item = self._events[self._index]
@@ -1510,7 +1510,7 @@ class XMLParser(object):
         fixtext = self._fixtext
         tag = fixname(tag)
         attrib = {}
-        for key, value in attrib_in.items():
+        for key, value in list(attrib_in.items()):
             attrib[fixname(key)] = fixtext(value)
         return self.target.start(tag, attrib)
 
@@ -1620,7 +1620,7 @@ class XMLParser(object):
     def feed(self, data):
         try:
             self._parser.Parse(data, 0)
-        except self._error, v:
+        except self._error as v:
             self._raiseerror(v)
 
     ##
@@ -1632,7 +1632,7 @@ class XMLParser(object):
     def close(self):
         try:
             self._parser.Parse("", 1) # end of data
-        except self._error, v:
+        except self._error as v:
             self._raiseerror(v)
         tree = self.target.close()
         del self.target, self._parser # get rid of circular references

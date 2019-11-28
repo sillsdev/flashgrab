@@ -8,7 +8,7 @@ Does not initialize or close the main log either; the calling code needs to do s
 '''
 
 #Force Python 3 syntax
-from __future__ import print_function, absolute_import, division  , unicode_literals
+
 from . import logg as L
 from . import xml_util as X
 from . import anki_util as A
@@ -133,14 +133,14 @@ def get_first_lift_file(loc):
 def tostr(val):
     """Returns the supplied value as a string, but returns an empty string for false values like None. """
     r = ''
-    if val: r = unicode(val)  #str(val)  #Python 2.x syntax  
+    if val: r = str(val)  #str(val)  #Python 2.x syntax  
     #TODO: see which other places need unicode(x). E.g. see the mix of str and unicode in the config attributes dict; not good
     return r
 
 
 def fnote(n):
     """Takes an Anki note and returns a formatted string"""
-    s = 'Anki Note:\n  items: {}\n  tags: {}'.format(pformat(n.items()), n.tags)
+    s = 'Anki Note:\n  items: {}\n  tags: {}'.format(pformat(list(n.items())), n.tags)
     return s
 
 #def equivalent_time(t, t2):
@@ -226,13 +226,13 @@ def load_anki_records(combos):
 #                L.debug("Anki record's model: {}".format(model_name))
                 if model_name in models:
                     key = (deck_name, model_name)
-                    if combos.has_key(key):
+                    if key in combos:
                         id_field = combos[key]
                         some_id = note[id_field].strip()
                         L.debug('\nFor ID {} loaded {}'.format(some_id, fnote(note)))
                         if not some_id:
                             L.warn('ID field is empty; IGNORING Anki record.')
-                        elif all_anki_records[key].has_key(some_id):
+                        elif some_id in all_anki_records[key]:
                             L.warn('ID ({}) is not unique; IGNORING Anki record for now, but tagging it as {}.'.format(some_id, TAG_DELETE_ME))
                             note.addTag(TAG_DELETE_ME)
                         else:
@@ -381,7 +381,7 @@ def sync(config_file=CONFIG_FILE):  #TODO: Add a "dry run" parameter
         for some_id in all_src_records[combo]:
             source = all_src_records[combo][some_id]
             L.debug('\nEvaluating source record : {}'.format(pformat(source)))
-            if all_targ_records[combo].has_key(some_id):   # a record with this ID already exists
+            if some_id in all_targ_records[combo]:   # a record with this ID already exists
                 target = all_targ_records[combo].pop(some_id) #pop the item to delete it from the Anki dict
                 
                 try:
@@ -430,7 +430,7 @@ def sync(config_file=CONFIG_FILE):  #TODO: Add a "dry run" parameter
     msg = "Done syncing each combination of deck + model: {}.\n"
     msg += "Looked at {} XML source records, and at {} records already in Anki.\n"
     msg += "Summary of what was synced into Anki:\n  {} note(s) added,\n  {} updated,\n  {} tagged for manual deletion,\n  {} auto-deleted,\n  {} left unchanged.\n  {} media file(s) copied.\n"
-    msg = msg.format(all_targ_records.keys(), num_src, num_targ, num_added, num_updated, num_tagged, num_deleted, num_unchanged, xdl.num_files_copied)
+    msg = msg.format(list(all_targ_records.keys()), num_src, num_targ, num_added, num_updated, num_tagged, num_deleted, num_unchanged, xdl.num_files_copied)
     msg += "{} error(s), {} warning(s).\n".format(L.error_count(), L.warn_count())
     msg += "To view your flashcard data, go to Browse and click your deck in the left pane.\n"
     # raise RuntimeError('PRETEND failure') # For verifying quick release of the log file

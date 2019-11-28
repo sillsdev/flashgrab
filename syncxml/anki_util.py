@@ -4,7 +4,7 @@ very little will work, though it does fall back to local folders a bit.
 '''
 
 #Force Python 3 syntax
-from __future__ import print_function, absolute_import, division  , unicode_literals
+
 import os, sys
 
 try:
@@ -45,19 +45,19 @@ def get_filepath(f):
 def get_anki_fields(modelname):  #(targ, source):
     """Given a model name, return a list/set of its fields."""
 
-    n = [u'Lexeme Form',
- u'Citation Form',
- u'Lex GUID',
- u'Lex Audio',
- u'Grammatical Info',
- u'Glosses',
- u'Definitions',
- u'Reversals',
- u'Picture',
- u'Example',
- u'Example Audio',
- u'Example Translation',
- u'xRxeversalxs']
+    n = ['Lexeme Form',
+ 'Citation Form',
+ 'Lex GUID',
+ 'Lex Audio',
+ 'Grammatical Info',
+ 'Glosses',
+ 'Definitions',
+ 'Reversals',
+ 'Picture',
+ 'Example',
+ 'Example Audio',
+ 'Example Translation',
+ 'xRxeversalxs']
     if not IN_ANKI:
         return n  #return hard-coded value
     

@@ -3,14 +3,14 @@ A library of useful helper classes to the SAX classes, for the
 convenience of application and driver writers.
 """
 
-import os, urlparse, urllib, types
-import handler
-import xmlreader
+import os, urllib.parse, urllib.request, urllib.parse, urllib.error, types
+from . import handler
+from . import xmlreader
 
 try:
-    _StringTypes = [types.StringType, types.UnicodeType]
+    _StringTypes = [bytes, str]
 except AttributeError:
-    _StringTypes = [types.StringType]
+    _StringTypes = [bytes]
 
 # See whether the xmlcharrefreplace error handler is
 # supported
@@ -23,7 +23,7 @@ except ImportError:
 
 def __dict_replace(s, d):
     """Replace substrings of a string using a dictionary."""
-    for key, value in d.items():
+    for key, value in list(d.items()):
         s = s.replace(key, value)
     return s
 
@@ -134,7 +134,7 @@ class XMLGenerator(handler.ContentHandler):
 
     def startElement(self, name, attrs):
         self._write('<' + name)
-        for (name, value) in attrs.items():
+        for (name, value) in list(attrs.items()):
             self._write(' %s=%s' % (name, quoteattr(value)))
         self._write('>')
 
@@ -151,7 +151,7 @@ class XMLGenerator(handler.ContentHandler):
                 self._out.write(' xmlns="%s"' % uri)
         self._undeclared_ns_maps = []
 
-        for (name, value) in attrs.items():
+        for (name, value) in list(attrs.items()):
             self._write(' %s=%s' % (self._qname(name), quoteattr(value)))
         self._write('>')
 
@@ -300,8 +300,8 @@ def prepare_input_source(source, base = ""):
             source.setSystemId(sysidfilename)
             f = open(sysidfilename, "rb")
         else:
-            source.setSystemId(urlparse.urljoin(base, sysid))
-            f = urllib.urlopen(source.getSystemId())
+            source.setSystemId(urllib.parse.urljoin(base, sysid))
+            f = urllib.request.urlopen(source.getSystemId())
 
         source.setByteStream(f)
 

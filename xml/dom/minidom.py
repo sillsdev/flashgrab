@@ -38,7 +38,7 @@ class Node(xml.dom.Node):
 
     prefix = EMPTY_PREFIX # non-null only for NS elements and attributes
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
 
     def toxml(self, encoding = None):
@@ -251,7 +251,7 @@ class Node(xml.dom.Node):
 
     def _call_user_data_handler(self, operation, src, dst):
         if hasattr(self, "_user_data"):
-            for key, (data, handler) in self._user_data.items():
+            for key, (data, handler) in list(self._user_data.items()):
                 if handler is not None:
                     handler.handle(operation, key, data, src, dst)
 
@@ -474,19 +474,19 @@ class NamedNodeMap(object):
 
     def item(self, index):
         try:
-            return self[self._attrs.keys()[index]]
+            return self[list(self._attrs.keys())[index]]
         except IndexError:
             return None
 
     def items(self):
         L = []
-        for node in self._attrs.values():
+        for node in list(self._attrs.values()):
             L.append((node.nodeName, node.value))
         return L
 
     def itemsNS(self):
         L = []
-        for node in self._attrs.values():
+        for node in list(self._attrs.values()):
             L.append(((node.namespaceURI, node.localName), node.value))
         return L
 
@@ -497,13 +497,13 @@ class NamedNodeMap(object):
             return key in self._attrsNS
 
     def keys(self):
-        return self._attrs.keys()
+        return list(self._attrs.keys())
 
     def keysNS(self):
-        return self._attrsNS.keys()
+        return list(self._attrsNS.keys())
 
     def values(self):
-        return self._attrs.values()
+        return list(self._attrs.values())
 
     def get(self, name, value=None):
         return self._attrs.get(name, value)
@@ -535,7 +535,7 @@ class NamedNodeMap(object):
             node.value = value
         else:
             if not isinstance(value, Attr):
-                raise TypeError, "value must be a string or Attr object"
+                raise TypeError("value must be a string or Attr object")
             node = value
             self.setNamedItem(node)
 
@@ -665,7 +665,7 @@ class Element(Node):
         return self.tagName
 
     def unlink(self):
-        for attr in self._attrs.values():
+        for attr in list(self._attrs.values()):
             attr.unlink()
         self._attrs = None
         self._attrsNS = None
@@ -798,7 +798,7 @@ class Element(Node):
         writer.write(indent+"<" + self.tagName)
 
         attrs = self._get_attributes()
-        a_names = attrs.keys()
+        a_names = list(attrs.keys())
         a_names.sort()
 
         for a_name in a_names:
@@ -1176,7 +1176,7 @@ class ReadOnlySequentialNamedNodeMap(object):
         else:
             node = self.getNamedItem(name_or_tuple)
         if node is None:
-            raise KeyError, name_or_tuple
+            raise KeyError(name_or_tuple)
         return node
 
     def item(self, index):
@@ -1604,7 +1604,7 @@ class Document(Node, DocumentLS):
 
     def createTextNode(self, data):
         if not isinstance(data, StringTypes):
-            raise TypeError, "node contents must be a string"
+            raise TypeError("node contents must be a string")
         t = Text()
         t.data = data
         t.ownerDocument = self
@@ -1612,7 +1612,7 @@ class Document(Node, DocumentLS):
 
     def createCDATASection(self, data):
         if not isinstance(data, StringTypes):
-            raise TypeError, "node contents must be a string"
+            raise TypeError("node contents must be a string")
         c = CDATASection()
         c.data = data
         c.ownerDocument = self
@@ -1688,7 +1688,7 @@ class Document(Node, DocumentLS):
                 # We have to process all ID attributes before
                 # returning in order to get all the attributes set to
                 # be IDs using Element.setIdAttribute*().
-                for attr in node.attributes.values():
+                for attr in list(node.attributes.values()):
                     if attr.namespaceURI:
                         if info.isIdNS(attr.namespaceURI, attr.localName):
                             self._id_cache[attr.value] = node
@@ -1709,7 +1709,7 @@ class Document(Node, DocumentLS):
                         elif node._magic_id_nodes == 1:
                             break
             elif node._magic_id_nodes:
-                for attr in node.attributes.values():
+                for attr in list(node.attributes.values()):
                     if attr._is_id:
                         self._id_cache[attr.value] = node
                         if attr.value == id:
@@ -1817,7 +1817,7 @@ def _clone_node(node, deep, newOwnerDocument):
     if node.nodeType == Node.ELEMENT_NODE:
         clone = newOwnerDocument.createElementNS(node.namespaceURI,
                                                  node.nodeName)
-        for attr in node.attributes.values():
+        for attr in list(node.attributes.values()):
             clone.setAttributeNS(attr.namespaceURI, attr.nodeName, attr.value)
             a = clone.getAttributeNodeNS(attr.namespaceURI, attr.localName)
             a.specified = attr.specified
@@ -1897,7 +1897,7 @@ def _nssplit(qualifiedName):
 
 def _get_StringIO():
     # we can't use cStringIO since it doesn't support Unicode strings
-    from StringIO import StringIO
+    from io import StringIO
     return StringIO()
 
 def _do_pulldom_parse(func, args, kwargs):

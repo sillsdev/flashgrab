@@ -3,9 +3,9 @@ import xml.sax.handler
 import types
 
 try:
-    _StringTypes = [types.StringType, types.UnicodeType]
+    _StringTypes = [bytes, str]
 except AttributeError:
-    _StringTypes = [types.StringType]
+    _StringTypes = [bytes]
 
 START_ELEMENT = "START_ELEMENT"
 END_ELEMENT = "END_ELEMENT"
@@ -85,7 +85,7 @@ class PullDOM(xml.sax.ContentHandler):
             else:
                 node = self.buildDocument(None, localname)
 
-        for aname,value in attrs.items():
+        for aname,value in list(attrs.items()):
             a_uri, a_localname = aname
             if a_uri == xmlns_uri:
                 if a_localname == 'xmlns':
@@ -121,7 +121,7 @@ class PullDOM(xml.sax.ContentHandler):
         else:
             node = self.buildDocument(None, name)
 
-        for aname,value in attrs.items():
+        for aname,value in list(attrs.items()):
             attr = self.document.createAttribute(aname)
             attr.value = value
             node.setAttributeNode(attr)
@@ -201,7 +201,7 @@ class PullDOM(xml.sax.ContentHandler):
 
 class ErrorHandler:
     def warning(self, exception):
-        print exception
+        print(exception)
     def error(self, exception):
         raise exception
     def fatalError(self, exception):
@@ -228,7 +228,7 @@ class DOMEventStream:
             return rc
         raise IndexError
 
-    def next(self):
+    def __next__(self):
         rc = self.getEvent()
         if rc:
             return rc
@@ -340,9 +340,9 @@ def parse(stream_or_string, parser=None, bufsize=None):
 
 def parseString(string, parser=None):
     try:
-        from cStringIO import StringIO
+        from io import StringIO
     except ImportError:
-        from StringIO import StringIO
+        from io import StringIO
 
     bufsize = len(string)
     buf = StringIO(string)
