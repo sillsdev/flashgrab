@@ -1,11 +1,5 @@
 import xml.sax
 import xml.sax.handler
-import types
-
-try:
-    _StringTypes = [bytes, str]
-except AttributeError:
-    _StringTypes = [bytes]
 
 START_ELEMENT = "START_ELEMENT"
 END_ELEMENT = "END_ELEMENT"
@@ -85,7 +79,7 @@ class PullDOM(xml.sax.ContentHandler):
             else:
                 node = self.buildDocument(None, localname)
 
-        for aname,value in list(attrs.items()):
+        for aname,value in attrs.items():
             a_uri, a_localname = aname
             if a_uri == xmlns_uri:
                 if a_localname == 'xmlns':
@@ -121,7 +115,7 @@ class PullDOM(xml.sax.ContentHandler):
         else:
             node = self.buildDocument(None, name)
 
-        for aname,value in list(attrs.items()):
+        for aname,value in attrs.items():
             attr = self.document.createAttribute(aname)
             attr.value = value
             node.setAttributeNode(attr)
@@ -223,6 +217,13 @@ class DOMEventStream:
         self.parser.setContentHandler(self.pulldom)
 
     def __getitem__(self, pos):
+        import warnings
+        warnings.warn(
+            "DOMEventStream's __getitem__ method ignores 'pos' parameter. "
+            "Use iterator protocol instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         rc = self.getEvent()
         if rc:
             return rc
@@ -330,8 +331,8 @@ default_bufsize = (2 ** 14) - 20
 def parse(stream_or_string, parser=None, bufsize=None):
     if bufsize is None:
         bufsize = default_bufsize
-    if type(stream_or_string) in _StringTypes:
-        stream = open(stream_or_string)
+    if isinstance(stream_or_string, str):
+        stream = open(stream_or_string, 'rb')
     else:
         stream = stream_or_string
     if not parser:
@@ -339,10 +340,7 @@ def parse(stream_or_string, parser=None, bufsize=None):
     return DOMEventStream(stream, parser, bufsize)
 
 def parseString(string, parser=None):
-    try:
-        from io import StringIO
-    except ImportError:
-        from io import StringIO
+    from io import StringIO
 
     bufsize = len(string)
     buf = StringIO(string)

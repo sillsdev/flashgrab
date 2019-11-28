@@ -1,14 +1,26 @@
 
+
+from builtins import zip
+from builtins import str
+from builtins import range
+#from past.builtins import str
+from builtins import object
 from itertools import *
 import math
 import operator
 import re
 import xml.dom
 import weakref
+import sys
 
 from xpath.exceptions import *
 import xpath
 
+# Workaround for Python 2 and 3 differences
+def _round(n):
+    if hasattr(math, 'isfinite') and not math.isfinite(n):
+        return n
+    return round(n)
 
 #
 # Data model functions.
@@ -22,6 +34,8 @@ def string_value(node):
         for n in axes['descendant'](node):
             if n.nodeType == n.TEXT_NODE:
                 s += n.data
+            elif n.nodeType == n.CDATA_SECTION_NODE:
+                s += n.nodeValue
         return s
 
     elif node.nodeType == node.ATTRIBUTE_NODE:
@@ -31,6 +45,9 @@ def string_value(node):
           node.nodeType == node.COMMENT_NODE or
           node.nodeType == node.TEXT_NODE):
         return node.data
+
+    elif node.nodeType == node.CDATA_SECTION_NODE:
+        return node.nodeValue
 
 def document_order(node):
     """Compute a document order value for the node.
@@ -101,10 +118,10 @@ def string(v):
             return 'Infinity'
         elif v == float('-inf'):
             return '-Infinity'
-        elif int(v) == v and v <= 0xffffffff:
-            v = int(v)
         elif str(v) == 'nan':
             return 'NaN'
+        elif int(v) == v and v <= 0xffffffff:
+            v = int(v)
         return str(v)
     elif booleanp(v):
         return 'true' if v else 'false'
@@ -463,7 +480,7 @@ class Function(Expr):
     @function(2, 3)
     def f_substring(self, node, pos, size, context, s, start, count=None):
         s = string(s)
-        start = round(number(start))
+        start = _round(number(start))
         if start != start:
             # Catch NaN
             return ''
@@ -471,7 +488,7 @@ class Function(Expr):
         if count is None:
             end = len(s) + 1
         else:
-            end = start + round(number(count))
+            end = start + _round(number(count))
             if end != end:
                 # Catch NaN
                 return ''
@@ -561,8 +578,8 @@ class Function(Expr):
     def f_round(self, node, pos, size, context, n):
         # XXX round(-0.0) should be -0.0, not 0.0.
         # XXX round(-1.5) should be -1.0, not -2.0.
-        return round(n)
-
+        return _round(n)
+        
     def __str__(self):
         return '%s(%s)' % (self.name, ', '.join((str(x) for x in self.args)))
 
@@ -581,7 +598,10 @@ def axisfn(reverse=False, principal_node_type=xml.dom.Node.ELEMENT_NODE):
     attributes indicating the axis direction and principal node type.
     """
     def decorate(f):
-        f.__name__ = f.__name__.replace('_', '-')
+        if sys.version_info[0] < 3:
+            f.__name__ = f.__name__.replace(b'_', b'-')
+        else:
+            f.__name__ = f.__name__.replace('_', '-')
         f.reverse = reverse
         f.principal_node_type = principal_node_type
         return f
@@ -674,11 +694,12 @@ def make_axes():
 
 make_axes()
 
-def merge_into_nodeset(target, source):
+def merge_into_nodeset(target, source, dontsort=False):
     """Place all the nodes from the source node-set into the target
     node-set, preserving document order.  Both node-sets must be in
     document order to begin with.
-
+    If dontsort is True the resulting list isn't sorted, but in stead a True
+    value is returned to indicate sorting needs to be done later.
     """
     if len(target) == 0:
         target.extend(source)
@@ -697,6 +718,8 @@ def merge_into_nodeset(target, source):
         target.extend(source)
     else:
         target.extend(source)
+        if dontsort:
+            return True
         target.sort(key=document_order)
 
 class AbsolutePathExpr(Expr):
@@ -732,15 +755,19 @@ class PathExpr(Expr):
 
         # Subsequent steps are evaluated for each node in the node-set
         # resulting from the previous step.
+        needSort = False
         for step in self.steps[1:]:
             aggregate = []
             for i in range(len(result)):
                 nodes = step.evaluate(result[i], i+1, len(result), context)
                 if not nodesetp(nodes):
                     raise XPathTypeError("path step is not a node-set")
-                merge_into_nodeset(aggregate, nodes)
+                needSortNow = merge_into_nodeset(aggregate, nodes, dontsort=True)
+                needSort = needSort or needSortNow
             result = aggregate
 
+        if needSort:
+            result.sort(key=document_order)
         return result
 
     def __str__(self):
@@ -884,7 +911,8 @@ class CommentTest(object):
 
 class TextTest(object):
     def match(self, node, axis, context):
-        return node.nodeType == node.TEXT_NODE
+        return (node.nodeType == node.TEXT_NODE or
+                node.nodeType == node.CDATA_SECTION_NODE)
 
     def __str__(self):
         return 'text()'

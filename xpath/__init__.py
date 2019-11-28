@@ -1,3 +1,7 @@
+
+from builtins import str
+from builtins import range
+from builtins import object
 from xpath.exceptions import *
 import xpath.exceptions
 import xpath.expr
@@ -77,7 +81,7 @@ class XPathContext(object):
     def findvalues(self, expr, node, **kwargs):
         return xpath.findvalues(expr, node, context=self, **kwargs)
 
-class XPath():
+class XPath(object):
     _max_cache = 100
     _cache = {}
 

@@ -1,4 +1,8 @@
-"""Python version compatibility support for minidom."""
+"""Python version compatibility support for minidom.
+
+This module contains internal implementation details and
+should not be imported; use xml.dom.minidom instead.
+"""
 
 # This module should only be imported using "import *".
 #
@@ -40,12 +44,7 @@ __all__ = ["NodeList", "EmptyNodeList", "StringTypes", "defproperty"]
 
 import xml.dom
 
-try:
-    str
-except NameError:
-    StringTypes = type(''),
-else:
-    StringTypes = type(''), type(str(''))
+StringTypes = (str,)
 
 
 class NodeList(list):
@@ -65,10 +64,10 @@ class NodeList(list):
     length = property(_get_length, _set_length,
                       doc="The number of nodes in the NodeList.")
 
-    def __getstate__(self):
-        return list(self)
-
+    # For backward compatibility
     def __setstate__(self, state):
+        if state is None:
+            state = []
         self[:] = state
 
 
@@ -100,7 +99,7 @@ class EmptyNodeList(tuple):
 
 
 def defproperty(klass, name, doc):
-    get = getattr(klass, ("_get_" + name)).__func__
+    get = getattr(klass, ("_get_" + name))
     def set(self, value, name=name):
         raise xml.dom.NoModificationAllowedErr(
             "attempt to modify read-only attribute " + repr(name))

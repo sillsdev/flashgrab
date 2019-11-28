@@ -68,7 +68,7 @@ class XMLReader:
 
         SAX parsers are not required to provide localization for errors
         and warnings; if they cannot support the requested locale,
-        however, they must throw a SAX exception. Applications may
+        however, they must raise a SAX exception. Applications may
         request a locale change in the middle of a parse."""
         raise SAXNotSupportedException("Locale support not implemented")
 
@@ -117,9 +117,11 @@ class IncrementalParser(XMLReader):
         source = saxutils.prepare_input_source(source)
 
         self.prepareParser(source)
-        file = source.getByteStream()
+        file = source.getCharacterStream()
+        if file is None:
+            file = source.getByteStream()
         buffer = file.read(self._bufsize)
-        while buffer != "":
+        while buffer:
             self.feed(buffer)
             buffer = file.read(self._bufsize)
         self.close()
@@ -294,12 +296,12 @@ class AttributesImpl:
         return self._attrs[name]
 
     def getNameByQName(self, name):
-        if not name in self._attrs:
+        if name not in self._attrs:
             raise KeyError(name)
         return name
 
     def getQNameByName(self, name):
-        if not name in self._attrs:
+        if name not in self._attrs:
             raise KeyError(name)
         return name
 
@@ -317,9 +319,6 @@ class AttributesImpl:
 
     def keys(self):
         return list(self._attrs.keys())
-
-    def has_key(self, name):
-        return name in self._attrs
 
     def __contains__(self, name):
         return name in self._attrs
@@ -349,14 +348,14 @@ class AttributesNSImpl(AttributesImpl):
         self._qnames = qnames
 
     def getValueByQName(self, name):
-        for (nsname, qname) in list(self._qnames.items()):
+        for (nsname, qname) in self._qnames.items():
             if qname == name:
                 return self._attrs[nsname]
 
         raise KeyError(name)
 
     def getNameByQName(self, name):
-        for (nsname, qname) in list(self._qnames.items()):
+        for (nsname, qname) in self._qnames.items():
             if qname == name:
                 return nsname
 
