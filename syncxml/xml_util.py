@@ -192,7 +192,7 @@ class XmlSettings(object):
         if not file_path:
             file_path = self.file_path
         bytes = self.dom.toxml('utf-8')
-        with open (file_path, mode='w') as outfile:  # Python 3 would also allow: encoding='utf-8'
+        with open (file_path, mode='w+b') as outfile:  # Python 3 would also allow: encoding='utf-8'
             outfile.write(bytes)
 
     def __init__(self, file_path, source_file='', source_audio=None, source_image=None):
@@ -695,11 +695,11 @@ def replace_all(fname, to_replace, target=None):
 
     # using python 2.x decode()/encode() syntax below, since its open() function doesn't support this v3 parameter: encoding='utf-8'
     with open(fname, 'r') as infile:
-        data = infile.read().decode('utf-8')
+        data = infile.read()
         for pair in to_replace:
             data = re.sub(pair[0], pair[1], data)
     with open (target, 'w') as outfile:
-        outfile.write(data.encode('utf-8'))
+        outfile.write(data)
 
 def _workaround_px(fname):
     """Makes a copy of the source XML file, replacing all <text> elements with <textt>

@@ -64,7 +64,7 @@ class Lg:
         self.verbosity = v
         self._num_errors, self._num_warnings = 0, 0
 
-        self.f = open(fp, 'w') #will silently overwrite the log file
+        self.f = open(fp, 'w+b') #will silently overwrite the log file
         self._w('Logging (verbosity level {}). Python interpreter is version {}.'.format(v, platform.python_version()))
         self._w('You are encouraged to search this log for "MSG:" labels to review errors and warnings.')
         self._w('This log is *overwritten* each time the addon runs, unless you make a copy.\n')
