@@ -8,7 +8,7 @@ http://ankisrs.net/docs/addons.html#debugging
 '''
 
 # Force Python 3 syntax
-from __future__ import print_function, absolute_import, division  , unicode_literals
+
 import os
 import shutil
 
@@ -434,12 +434,12 @@ if A.IN_ANKI:
     # create a new menu item in Anki
     action = QAction(SX.ADDON_NAME, mw)
     # set it to call our function when it's clicked
-    mw.connect(action, SIGNAL("triggered()"), on_sync_clicked)
+    action.triggered.connect(on_sync_clicked)
     # and add it to the tools menu
     mw.form.menuTools.addAction(action)
     
     action = QAction('(re)configure ' + SX.ADDON_SHORT_NAME, mw)
-    mw.connect(action, SIGNAL("triggered()"), on_reconfigure_clicked)
+    action.triggered.connect(on_reconfigure_clicked)
     mw.form.menuTools.addAction(action)
 
 cpath = SX.get_config_path()

@@ -7,7 +7,7 @@ Needs to be imported from a script somewhere outside this package, and the osdir
 '''
 
 #Force Python 3 syntax
-from __future__ import print_function, absolute_import, division  , unicode_literals
+
 
 from . import syncxml as SX
 from . import SyncFromXML as UI

@@ -5,7 +5,7 @@ drops comments so I used minidom for the config file
 '''
 
 #Force Python 3 syntax
-from __future__ import print_function, absolute_import, division, unicode_literals
+
 
 import xml.parsers.expat
 #from xml.parsers.expat import ExpatError  # XML formatting errors
@@ -82,14 +82,14 @@ def merge_dicts(d, d2):
     dup_count = (len(bak) + len(d2)) - len(d)
     dups = []
     if dup_count != 0:
-        for key, val in bak.items():
-            if d2.has_key(key):  #TODO: replace all dict.has_key(key) calls with the newer "key in dict" syntax
+        for key, val in list(bak.items()):
+            if key in d2:  #TODO: replace all dict.has_key(key) calls with the newer "key in dict" syntax
                 dups.append((key, val))
     return dups
 
 def _stringDict(d):
         d2 = {}
-        for k in d.keys():
+        for k in list(d.keys()):
             d2.setdefault(k, d[k].value)
         return d2
 
@@ -192,7 +192,7 @@ class XmlSettings(object):
         if not file_path:
             file_path = self.file_path
         bytes = self.dom.toxml('utf-8')
-        with open (file_path, mode='w') as outfile:  # Python 3 would also allow: encoding='utf-8'
+        with open (file_path, mode='w+b') as outfile:  # Python 3 would also allow: encoding='utf-8'
             outfile.write(bytes)
 
     def __init__(self, file_path, source_file='', source_audio=None, source_image=None):
@@ -401,7 +401,7 @@ class XmlParser(object):
               "unless you edit the config file: {}".format(problems)
             L.warn(msg.format(val, core, val + audio, core + audio))
     
-        s = main_codes.items()
+        s = list(main_codes.items())
         #Sort: highest count first; secondary sort prefers shorter WS names. E.g. ('flh', 1) beats ('flh-x-Lisan', 1) 
         s.sort(key=lambda x: x[1]*99 - len(x[0]), reverse=True) 
         return s
@@ -554,7 +554,7 @@ class XmlDataLoader:
                     if sync_media:
                         target_path = os.path.split(source_path)[1] #filename only
                         target_path = deck_name + "_" + target_path #prefixed since Anki allows no subfolders; prefix helps with sorting and uniqueness, and identifying deletables
-                        if self._media_files.has_key(target_path) and self._media_files[target_path] != abs_source_path:
+                        if target_path in self._media_files and self._media_files[target_path] != abs_source_path:
                             L.error('A different source media file already resolved to this same target name ({}). Will not attempt to copy the file.'.format(target_path))
                         else:
                             self._media_files[target_path] = abs_source_path
@@ -637,7 +637,7 @@ class XmlDataLoader:
         combo = (deck_name, model_name)
         id_field_name = source_attribs['id_field']
         self.combos[combo] = id_field_name
-        if not self.all_src_records.has_key(combo):
+        if combo not in self.all_src_records:
             # This is our first time loading into this deck/model combination
             self.all_src_records[combo] = src_records
             self.num_src += len(src_records)
@@ -695,11 +695,11 @@ def replace_all(fname, to_replace, target=None):
 
     # using python 2.x decode()/encode() syntax below, since its open() function doesn't support this v3 parameter: encoding='utf-8'
     with open(fname, 'r') as infile:
-        data = infile.read().decode('utf-8')
+        data = infile.read()
         for pair in to_replace:
             data = re.sub(pair[0], pair[1], data)
     with open (target, 'w') as outfile:
-        outfile.write(data.encode('utf-8'))
+        outfile.write(data)
 
 def _workaround_px(fname):
     """Makes a copy of the source XML file, replacing all <text> elements with <textt>

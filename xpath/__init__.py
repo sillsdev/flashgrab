@@ -1,3 +1,7 @@
+
+from builtins import str
+from builtins import range
+from builtins import object
 from xpath.exceptions import *
 import xpath.exceptions
 import xpath.expr
@@ -19,7 +23,7 @@ def api(f):
     def api_function(*args, **kwargs):
         try:
             return f(*args, **kwargs)
-        except XPathError, e:
+        except XPathError as e:
             raise e
     api_function.__name__ = f.__name__
     api_function.__doc__ = f.__doc__
@@ -36,7 +40,7 @@ class XPathContext(object):
                 document = document.ownerDocument
             if document.documentElement is not None:
                 attrs = document.documentElement.attributes
-                for attr in (attrs.item(i) for i in xrange(attrs.length)):
+                for attr in (attrs.item(i) for i in range(attrs.length)):
                     if attr.name == 'xmlns':
                         self.default_namespace = attr.value
                     elif attr.name.startswith('xmlns:'):
@@ -77,7 +81,7 @@ class XPathContext(object):
     def findvalues(self, expr, node, **kwargs):
         return xpath.findvalues(expr, node, context=self, **kwargs)
 
-class XPath():
+class XPath(object):
     _max_cache = 100
     _cache = {}
 
@@ -87,7 +91,7 @@ class XPath():
         try:
             parser = xpath.parser.XPath(xpath.parser.XPathScanner(str(expr)))
             self.expr = parser.XPath()
-        except xpath.yappsrt.SyntaxError, e:
+        except xpath.yappsrt.SyntaxError as e:
             raise XPathParseError(str(expr), e.pos, e.msg)
 
     @classmethod

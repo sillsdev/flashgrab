@@ -1,14 +1,26 @@
-from __future__ import division
+
+
+from builtins import zip
+from builtins import str
+from builtins import range
+#from past.builtins import str
+from builtins import object
 from itertools import *
 import math
 import operator
 import re
 import xml.dom
 import weakref
+import sys
 
 from xpath.exceptions import *
 import xpath
 
+# Workaround for Python 2 and 3 differences
+def _round(n):
+    if hasattr(math, 'isfinite') and not math.isfinite(n):
+        return n
+    return round(n)
 
 #
 # Data model functions.
@@ -18,10 +30,12 @@ def string_value(node):
     """Compute the string-value of a node."""
     if (node.nodeType == node.DOCUMENT_NODE or
         node.nodeType == node.ELEMENT_NODE):
-        s = u''
+        s = ''
         for n in axes['descendant'](node):
             if n.nodeType == n.TEXT_NODE:
                 s += n.data
+            elif n.nodeType == n.CDATA_SECTION_NODE:
+                s += n.nodeValue
         return s
 
     elif node.nodeType == node.ATTRIBUTE_NODE:
@@ -31,6 +45,9 @@ def string_value(node):
           node.nodeType == node.COMMENT_NODE or
           node.nodeType == node.TEXT_NODE):
         return node.data
+
+    elif node.nodeType == node.CDATA_SECTION_NODE:
+        return node.nodeValue
 
 def document_order(node):
     """Compute a document order value for the node.
@@ -82,7 +99,7 @@ def document_order(node):
 def nodeset(v):
     """Convert a value to a nodeset."""
     if not nodesetp(v):
-        raise XPathTypeError, "value is not a node-set"
+        raise XPathTypeError("value is not a node-set")
     return v
 
 def nodesetp(v):
@@ -94,25 +111,25 @@ def string(v):
     """Convert a value to a string."""
     if nodesetp(v):
         if not v:
-            return u''
+            return ''
         return string_value(v[0])
     elif numberp(v):
         if v == float('inf'):
-            return u'Infinity'
+            return 'Infinity'
         elif v == float('-inf'):
-            return u'-Infinity'
+            return '-Infinity'
+        elif str(v) == 'nan':
+            return 'NaN'
         elif int(v) == v and v <= 0xffffffff:
             v = int(v)
-        elif str(v) == 'nan':
-            return u'NaN'
-        return unicode(v)
+        return str(v)
     elif booleanp(v):
-        return u'true' if v else u'false'
+        return 'true' if v else 'false'
     return v
 
 def stringp(v):
     """Return true iff 'v' is a string."""
-    return isinstance(v, basestring)
+    return isinstance(v, str)
 
 def boolean(v):
     """Convert a value to a boolean."""
@@ -325,13 +342,13 @@ class Function(Expr):
         self.args = args
         self.evaluate = getattr(self, 'f_%s' % name.replace('-', '_'), None)
         if self.evaluate is None:
-            raise XPathUnknownFunctionError, 'unknown function "%s()"' % name
+            raise XPathUnknownFunctionError('unknown function "%s()"' % name)
 
         if len(self.args) < self.evaluate.minargs:
-            raise XPathTypeError, 'too few arguments for "%s()"' % name
+            raise XPathTypeError('too few arguments for "%s()"' % name)
         if (self.evaluate.maxargs is not None and
             len(self.args) > self.evaluate.maxargs):
-            raise XPathTypeError, 'too many arguments for "%s()"' % name
+            raise XPathTypeError('too many arguments for "%s()"' % name)
 
     #
     # XPath functions are implemented by methods of the Function class.
@@ -397,7 +414,7 @@ class Function(Expr):
             ids = [string(arg)]
         if node.nodeType != node.DOCUMENT_NODE:
             node = node.ownerDocument
-        return list(filter(None, (node.getElementById(id) for id in ids)))
+        return list([_f for _f in (node.getElementById(id) for id in ids) if _f])
 
     @function(0, 1, implicit=True, first=True)
     def f_local_name(self, node, pos, size, context, argnode):
@@ -463,7 +480,7 @@ class Function(Expr):
     @function(2, 3)
     def f_substring(self, node, pos, size, context, s, start, count=None):
         s = string(s)
-        start = round(number(start))
+        start = _round(number(start))
         if start != start:
             # Catch NaN
             return ''
@@ -471,7 +488,7 @@ class Function(Expr):
         if count is None:
             end = len(s) + 1
         else:
-            end = start + round(number(count))
+            end = start + _round(number(count))
             if end != end:
                 # Catch NaN
                 return ''
@@ -494,12 +511,12 @@ class Function(Expr):
     def f_normalize_space(self, node, pos, size, context, s):
         return re.sub(r'\s+', ' ', s.strip())
 
-    @function(3, 3, convert=lambda x: unicode(string(x)))
+    @function(3, 3, convert=lambda x: str(string(x)))
     def f_translate(self, node, pos, size, context, s, source, target):
         # str.translate() and unicode.translate() are completely different.
         # The translate() arguments are coerced to unicode.
         table = {}
-        for schar, tchar in izip(source, target):
+        for schar, tchar in zip(source, target):
             schar = ord(schar)
             if schar not in table:
                 table[schar] = tchar
@@ -534,7 +551,7 @@ class Function(Expr):
         for n in axes['ancestor-or-self'](node):
             if n.nodeType == n.ELEMENT_NODE and n.hasAttribute('xml:lang'):
                 lang = n.getAttribute('xml:lang').lower()
-                if s == lang or lang.startswith(s + u'-'):
+                if s == lang or lang.startswith(s + '-'):
                     return True
                 break
         return False
@@ -561,8 +578,8 @@ class Function(Expr):
     def f_round(self, node, pos, size, context, n):
         # XXX round(-0.0) should be -0.0, not 0.0.
         # XXX round(-1.5) should be -1.0, not -2.0.
-        return round(n)
-
+        return _round(n)
+        
     def __str__(self):
         return '%s(%s)' % (self.name, ', '.join((str(x) for x in self.args)))
 
@@ -581,7 +598,10 @@ def axisfn(reverse=False, principal_node_type=xml.dom.Node.ELEMENT_NODE):
     attributes indicating the axis direction and principal node type.
     """
     def decorate(f):
-        f.__name__ = f.__name__.replace('_', '-')
+        if sys.version_info[0] < 3:
+            f.__name__ = f.__name__.replace(b'_', b'-')
+        else:
+            f.__name__ = f.__name__.replace('_', '-')
         f.reverse = reverse
         f.principal_node_type = principal_node_type
         return f
@@ -646,7 +666,7 @@ def make_axes():
     def attribute(node):
         if node.attributes is not None:
             return (node.attributes.item(i)
-                    for i in xrange(node.attributes.length))
+                    for i in range(node.attributes.length))
         return ()
 
     @axisfn()
@@ -669,16 +689,17 @@ def make_axes():
         return chain([node], ancestor(node))
 
     # Place each axis function defined here into the 'axes' dict.
-    for axis in locals().values():
+    for axis in list(locals().values()):
         axes[axis.__name__] = axis
 
 make_axes()
 
-def merge_into_nodeset(target, source):
+def merge_into_nodeset(target, source, dontsort=False):
     """Place all the nodes from the source node-set into the target
     node-set, preserving document order.  Both node-sets must be in
     document order to begin with.
-
+    If dontsort is True the resulting list isn't sorted, but in stead a True
+    value is returned to indicate sorting needs to be done later.
     """
     if len(target) == 0:
         target.extend(source)
@@ -697,6 +718,8 @@ def merge_into_nodeset(target, source):
         target.extend(source)
     else:
         target.extend(source)
+        if dontsort:
+            return True
         target.sort(key=document_order)
 
 class AbsolutePathExpr(Expr):
@@ -732,15 +755,19 @@ class PathExpr(Expr):
 
         # Subsequent steps are evaluated for each node in the node-set
         # resulting from the previous step.
+        needSort = False
         for step in self.steps[1:]:
             aggregate = []
-            for i in xrange(len(result)):
+            for i in range(len(result)):
                 nodes = step.evaluate(result[i], i+1, len(result), context)
                 if not nodesetp(nodes):
                     raise XPathTypeError("path step is not a node-set")
-                merge_into_nodeset(aggregate, nodes)
+                needSortNow = merge_into_nodeset(aggregate, nodes, dontsort=True)
+                needSort = needSort or needSortNow
             result = aggregate
 
+        if needSort:
+            result.sort(key=document_order)
         return result
 
     def __str__(self):
@@ -768,7 +795,7 @@ class PredicateList(Expr):
 
         for pred in self.predicates:
             match = []
-            for i, node in izip(count(1), result):
+            for i, node in zip(count(1), result):
                 r = pred.evaluate(node, i, len(result), context)
 
                 # If a predicate evaluates to a number, select the node
@@ -884,7 +911,8 @@ class CommentTest(object):
 
 class TextTest(object):
     def match(self, node, axis, context):
-        return node.nodeType == node.TEXT_NODE
+        return (node.nodeType == node.TEXT_NODE or
+                node.nodeType == node.CDATA_SECTION_NODE)
 
     def __str__(self):
         return 'text()'
