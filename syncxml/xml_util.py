@@ -693,12 +693,11 @@ def replace_all(fname, to_replace, target=None):
 #    while os.path.exists(fname2):
 #        fname2 += ".tmp"
 
-    # using python 2.x decode()/encode() syntax below, since its open() function doesn't support this v3 parameter: encoding='utf-8'
-    with open(fname, 'r') as infile:
+    with open(fname, 'r', encoding='utf-8') as infile:
         data = infile.read()
         for pair in to_replace:
             data = re.sub(pair[0], pair[1], data)
-    with open (target, 'w') as outfile:
+    with open (target, 'w', encoding='utf-8') as outfile:
         outfile.write(data)
 
 def _workaround_px(fname):
