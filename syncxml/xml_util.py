@@ -200,8 +200,8 @@ class XmlSettings(object):
         It only really stores the minidom, but it (and XmlSource) provide more convenient read access 
         via get methods that return string dictionaries.
         If the optional parameters are provided, they will overwrite whatever was in those
-        attributes for *every* source element. If just source_file is provided, e.g. C:\mylift\Catalan.LIFT,
-        then audio and image will be deduced, e.g. C:\mylift\audio and C:\mylift\pictures . 
+        attributes for *every* source element. If just source_file is provided, e.g. C:\\mylift\\Catalan.LIFT,
+        then audio and image will be deduced, e.g. C:\\mylift\\audio and C:\\mylift\\pictures .
         NOTE: if source_file is not provided, the other source_ parameters will be ignored.
         """
         

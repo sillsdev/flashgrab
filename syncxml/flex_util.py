@@ -22,9 +22,9 @@ def flex_dir():
     return d
 
 def flex_media(f, dir=""):
-    """Given an absolute filepath such as c:\files\Catalan.lift, and the FLEx project folder,
+    """Given an absolute filepath such as c:\\files\\Catalan.lift, and the FLEx project folder,
     check whether audio and image folders are likely to be available under, say,
-    C:\ProgramData\SIL\FieldWorks\Projects\Catalan\LinkedFiles
+    C:\\ProgramData\\SIL\\FieldWorks\\Projects\\Catalan\\LinkedFiles
     Or, given just an absolute path, assume it's an fwdata file and deduce accordingly.
     """
     media_dir = ""
