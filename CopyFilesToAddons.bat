@@ -11,6 +11,10 @@ xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt xml\*.* %USERPROFILE%\documents
 xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt xpath\*.* %USERPROFILE%\documents\Anki\addons\xpath\
 xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt distutils\*.* %USERPROFILE%\documents\Anki\addons\distutils\
 xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt syncxml\*.* %USERPROFILE%\documents\Anki\addons\syncxml\
-xcopy /D /Y syncx.py %USERPROFILE%\documents\Anki\addons\
+xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt syncxml\samples\*.* %USERPROFILE%\documents\Anki\addons\samples\
+xcopy /D /Y __init__.py %USERPROFILE%\documents\Anki\addons\
+REM WAS: xcopy /D /Y syncx.py %USERPROFILE%\documents\Anki\addons\
+xcopy /D /Y manifest.json %USERPROFILE%\documents\Anki\addons\
+xcopy /D /Y syncxml\SyncFromXML_config_default.txt %USERPROFILE%\documents\Anki\addons\
 
 PAUSE
