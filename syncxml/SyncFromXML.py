@@ -31,8 +31,14 @@ if A.IN_ANKI:
     from anki.notes import Note
     # from anki.utils import isMac  #obsolete now, I think
     # from PyQt4.QtGui import QMessageBox  #done for us already?
-    QUESTION = QMessageBox.Question
-    CRITICAL = QMessageBox.Critical
+    try:
+        QUESTION = QMessageBox.Icon.Question
+    except AttributeError:
+        QUESTION = QMessageBox.Question
+    try:
+        CRITICAL = QMessageBox.Icon.Critical
+    except AttributeError:
+        CRITICAL = QMessageBox.Critical
 else:
     # crash-prevention dummies
     QUESTION = 0
@@ -59,7 +65,11 @@ def dialogbox(text, buttons, icon=4, log=True):
 
 def hourglass():
     if A.IN_ANKI:
-        mw.app.setOverrideCursor(QCursor(Qt.WaitCursor))  # display an hourglass cursor
+        try:
+            mw.app.setOverrideCursor(QCursor(Qt.WaitCursor))  # display an hourglass cursor
+        except AttributeError:
+            # Qt6 has moved this to CursorShape
+            mw.app.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))  # display an hourglass cursor
 def no_hourglass():
     if A.IN_ANKI:
         mw.app.restoreOverrideCursor()
