@@ -12,9 +12,7 @@ __all__ = [
 
 __revision__ = "$Id$"
 
-import os
-from distutils.errors import DistutilsFileError
-from distutils import log
+import os, sys
 
 # for generating verbose output in 'copy_file()'
 _copy_action = {None: 'copying',
@@ -22,11 +20,21 @@ _copy_action = {None: 'copying',
                 'sym': 'symbolically linking'}
 
 
+# from distutils.dep_util import newer
+# distutils deprecated in Python 3.12 and later, so reimplement newer() function
+def newer(source, target):
+    if not os.path.exists(source):
+        raise OSError("file %s does not exist" % (os.path.abspath(source)))
+    return not os.path.exists(target) or (
+        os.path.getmtime(source) > os.path.getmtime(target)
+    )
+
+
 def _copy_file_contents(src, dst, buffer_size=16*1024):
     """Copy the file 'src' to 'dst'.
 
     Both must be filenames. Any error opening either file, reading from
-    'src', or writing to 'dst', raises DistutilsFileError.  Data is
+    'src', or writing to 'dst', raises OSError.  Data is
     read/written in chunks of 'buffer_size' bytes (default 16k).  No attempt
     is made to handle anything apart from regular files.
     """
@@ -39,30 +47,27 @@ def _copy_file_contents(src, dst, buffer_size=16*1024):
             fsrc = open(src, 'rb')
         except os.error as xxx_todo_changeme3:
             (errno, errstr) = xxx_todo_changeme3.args
-            raise DistutilsFileError("could not open '%s': %s" % (src, errstr))
+            raise OSError("could not open '%s': %s" % (src, errstr))
 
         if os.path.exists(dst):
             try:
                 os.unlink(dst)
             except os.error as xxx_todo_changeme:
                 (errno, errstr) = xxx_todo_changeme.args
-                raise DistutilsFileError(
-                      "could not delete '%s': %s" % (dst, errstr))
+                raise OSError("could not delete '%s': %s" % (dst, errstr))
 
         try:
             fdst = open(dst, 'wb')
         except os.error as xxx_todo_changeme4:
             (errno, errstr) = xxx_todo_changeme4.args
-            raise DistutilsFileError(
-                  "could not create '%s': %s" % (dst, errstr))
+            raise OSError("could not create '%s': %s" % (dst, errstr))
 
         while 1:
             try:
                 buf = fsrc.read(buffer_size)
             except os.error as xxx_todo_changeme1:
                 (errno, errstr) = xxx_todo_changeme1.args
-                raise DistutilsFileError(
-                      "could not read from '%s': %s" % (src, errstr))
+                raise OSError("could not read from '%s': %s" % (src, errstr))
 
             if not buf:
                 break
@@ -71,8 +76,7 @@ def _copy_file_contents(src, dst, buffer_size=16*1024):
                 fdst.write(buf)
             except os.error as xxx_todo_changeme2:
                 (errno, errstr) = xxx_todo_changeme2.args
-                raise DistutilsFileError(
-                      "could not write to '%s': %s" % (dst, errstr))
+                raise OSError("could not write to '%s': %s" % (dst, errstr))
 
     finally:
         if fdst:
@@ -113,12 +117,10 @@ def copy_file(src, dst, preserve_mode=1, preserve_times=1, update=0,
     # changing it (ie. it's not already a hard/soft link to src OR
     # (not update) and (src newer than dst).
 
-    from distutils.dep_util import newer
     from stat import ST_ATIME, ST_MTIME, ST_MODE, S_IMODE
 
     if not os.path.isfile(src):
-        raise DistutilsFileError(
-              "can't copy '%s': doesn't exist or not a regular file" % src)
+        raise OSError("can't copy '%s': doesn't exist or not a regular file" % src)
 
     if os.path.isdir(dst):
         dir = dst
@@ -128,7 +130,7 @@ def copy_file(src, dst, preserve_mode=1, preserve_times=1, update=0,
 
     if update and not newer(src, dst):
         if verbose >= 1:
-            log.debug("not copying %s (output up-to-date)", src)
+            print("not copying %s (output up-to-date)".format(src), file=sys.stderr)
         return dst, 0
 
     try:
@@ -138,9 +140,9 @@ def copy_file(src, dst, preserve_mode=1, preserve_times=1, update=0,
 
     if verbose >= 1:
         if os.path.basename(dst) == os.path.basename(src):
-            log.info("%s %s -> %s", action, src, dir)
+            print("%s %s -> %s".format(action, src, dir))
         else:
-            log.info("%s %s -> %s", action, src, dst)
+            print("%s %s -> %s".format(action, src, dst))
 
     if dry_run:
         return (dst, 1)
@@ -185,25 +187,21 @@ def move_file (src, dst, verbose=1, dry_run=0):
     import errno
 
     if verbose >= 1:
-        log.info("moving %s -> %s", src, dst)
+        print("moving %s -> %s".format(src, dst))
 
     if dry_run:
         return dst
 
     if not isfile(src):
-        raise DistutilsFileError("can't move '%s': not a regular file" % src)
+        raise OSError("can't move '%s': not a regular file" % src)
 
     if isdir(dst):
         dst = os.path.join(dst, basename(src))
     elif exists(dst):
-        raise DistutilsFileError(
-              "can't move '%s': destination '%s' already exists" %
-              (src, dst))
+        raise OSError("can't move '%s': destination '%s' already exists" % (src, dst))
 
     if not isdir(dirname(dst)):
-        raise DistutilsFileError(
-              "can't move '%s': destination '%s' not a valid path" % \
-              (src, dst))
+        raise OSError("can't move '%s': destination '%s' not a valid path" % (src, dst))
 
     copy_it = 0
     try:
@@ -213,8 +211,7 @@ def move_file (src, dst, verbose=1, dry_run=0):
         if num == errno.EXDEV:
             copy_it = 1
         else:
-            raise DistutilsFileError(
-                  "couldn't move '%s' to '%s': %s" % (src, dst, msg))
+            raise OSError("couldn't move '%s' to '%s': %s" % (src, dst, msg))
 
     if copy_it:
         copy_file(src, dst, verbose=verbose)
@@ -226,7 +223,7 @@ def move_file (src, dst, verbose=1, dry_run=0):
                 os.unlink(dst)
             except os.error:
                 pass
-            raise DistutilsFileError(
+            raise OSError(
                   ("couldn't move '%s' to '%s' by copy/delete: " +
                    "delete '%s' failed: %s") %
                   (src, dst, src, msg))
