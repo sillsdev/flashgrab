@@ -18,9 +18,9 @@ anki_user_profile = '../User 1'  #'D:\\files\\user57\\documents\\Anki\\User 1'
 
 ANKI_MEDIA_FOLDER = 'collection.media'
 
-ADDON_FOLDER = 'syncxml'
+ADDON_FOLDER = 'FlashGrab'
 APKG_PATH = os.path.join("samples", "lift-dictionary.apkg")
-NO_MODEL_INSTR = "\nSteps: Restart Anki and make sure the target deck exists. Use Tools, Manage Note Types, or go to File Import, and import Anki/addons/syncxml/{}. Or, reconfigure.)".format(APKG_PATH)
+NO_MODEL_INSTR = "\nSteps: Restart Anki and make sure the target deck exists. Use Tools, Manage Note Types, or go to File Import, and import Anki/addons/{}/{}. Or, reconfigure.)".format(ADDON_FOLDER, APKG_PATH)
 NO_MODEL_MSG = "The target model with the fields we needed was missing; have attempted to re-import the default APKG but an error occurred. \nPlease try again, or create it manually. \n{}".format(NO_MODEL_INSTR)
 TARGET_DECK = "lift-dictionary"
 
