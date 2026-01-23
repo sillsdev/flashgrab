@@ -90,7 +90,11 @@ def import_apkg_model(path, delete=False):
 #            assert deck.cardCount() > 0
 #            assert deck.noteCount() > 0
             ids = mw.col.findCards("deck:{}".format(TARGET_DECK))
-            mw.col.remCards(ids, True)
+            try:
+                mw.col.remCards(ids, True)
+            except TypeError:
+                # Newer versions of Anki renamed remCards and removed the second argument
+                mw.col.remove_cards_and_orphaned_notes(ids)
 #            assert deck.cardCount() == 0
 #            assert deck.noteCount() == 0
         except:
