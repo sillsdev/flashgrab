@@ -1,4 +1,5 @@
 .pyc\
+\__pycache__\
 \local_launch.py\
 \syncx_local.py\
 \SyncFromXML_config.txt\
