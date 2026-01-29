@@ -20,6 +20,7 @@ REM We do want one file from samples, but it should be in a top-level "samples" 
 xcopy /D /E /Y /exclude:ExcludedFilesWindows.txt syncxml\samples\lift-dictionary.apkg "%ROOTFOLDER%\samples\"
 xcopy /D /Y __init__.py "%ROOTFOLDER%\"
 xcopy /D /Y manifest.json "%ROOTFOLDER%\"
+REM Default config should also be in plugin root
 xcopy /D /Y syncxml\SyncFromXML_config_default.txt "%ROOTFOLDER%\"
 
 PAUSE

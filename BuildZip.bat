@@ -1,5 +1,7 @@
 @ECHO OFF
 REM A Windows 'build' script.
+REM
+REM If you modify this, make corresponding changes to BuildZip.sh
 
 IF NOT EXIST "C:\Program Files/7-Zip/7z.exe" (
   ECHO This script uses 7-Zip to build the .zip file, but 7-Zip does not seem to be installed, so the script will fail.
