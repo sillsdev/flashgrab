@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # A Linux build script
 
+# If you modify this, make corresponding changes to BuildZip.bat
+
 which 7z || (
   echo 7zip not found. Please install the 7zip package, e.g. sudo apt install 7zip or sudo pacman -S 7zip
   exit 1

@@ -17,15 +17,12 @@ PLUGIN_HOME="${DATA_HOME}/Anki2/addons21/${PLUGIN_NAME}"
 mkdir -p "${PLUGIN_HOME}"
 rsync -r -u -v --exclude-from ExcludedFilesLinux.txt xml "${PLUGIN_HOME}/"
 rsync -r -u -v --exclude-from ExcludedFilesLinux.txt xpath "${PLUGIN_HOME}/"
-rsync -r -u -v --exclude-from ExcludedFilesLinux.txt syncxml "${PLUGIN_HOME}/"
 # No -r for syncxml since we don't want to include docsrc or samples directories
-# syncxml samples dir should be at the top level of the plugin directory and only contain one file
+rsync -u -v --exclude-from ExcludedFilesLinux.txt syncxml "${PLUGIN_HOME}/"
+# We do want one file from samples, but it should be in a top-level "samples" folder in the addons directory
 mkdir -p "${PLUGIN_HOME}/samples"
-mv "${PLUGIN_HOME}/syncxml/samples/lift-dictionary.apkg" "${PLUGIN_HOME}/samples/"
-# Default config should also be in plugin root
-mv "${PLUGIN_HOME}/syncxml/SyncFromXML_config_default.txt" "${PLUGIN_HOME}/"
-# Rest of samples, as well as docsrc folder, not needed
-rm -rf "${PLUGIN_HOME}/syncxml/samples"
-rm -rf "${PLUGIN_HOME}/syncxml/docsrc"
+rsync -u -v --exclude-from ExcludedFilesLinux.txt syncxml/samples/lift-dictionary.apkg "${PLUGIN_HOME}/samples/"
 cp -u -v __init__.py "${PLUGIN_HOME}/"
 cp -u -v manifest.json "${PLUGIN_HOME}/"
+# Default config should also be in plugin root
+cp -u -v syncxml/SyncFromXML_config_default.txt "${PLUGIN_HOME}/"
